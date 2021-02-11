@@ -1,0 +1,12 @@
+C:\Users\yacry\source\repos\ConsoleEngine\bin\Debug\ConsoleEngine.dll
+C:\Users\yacry\source\repos\ConsoleEngine\bin\Debug\ConsoleEngine.pdb
+C:\Users\yacry\source\repos\ConsoleEngine\obj\Debug\ConsoleEngine.csprojAssemblyReference.cache
+C:\Users\yacry\source\repos\ConsoleEngine\obj\Debug\ConsoleEngine.csproj.CoreCompileInputs.cache
+C:\Users\yacry\source\repos\ConsoleEngine\obj\Debug\ConsoleEngine.dll
+C:\Users\yacry\source\repos\ConsoleEngine\obj\Debug\ConsoleEngine.pdb
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\bin\Debug\ConsoleEngine.dll
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\bin\Debug\ConsoleEngine.pdb
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\obj\Debug\ConsoleEngine.csprojAssemblyReference.cache
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\obj\Debug\ConsoleEngine.csproj.CoreCompileInputs.cache
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\obj\Debug\ConsoleEngine.dll
+C:\Users\yacry\source\repos\TaskMasterMain\ConsoleEngine\obj\Debug\ConsoleEngine.pdb
