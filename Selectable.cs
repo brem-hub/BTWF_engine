@@ -1,4 +1,6 @@
-﻿namespace ConsoleEngine
+﻿using System;
+
+namespace ConsoleEngine
 {
     /// <summary>
     /// This interface is needed for any selectable GUI element.
@@ -9,6 +11,8 @@
     {
         void SetActive();
         void SetInactive();
+
+        string ColorContext();
     }
 
     /// <summary>
@@ -23,9 +27,11 @@
         //public bool Active { get; set; }
         public string Content { get; }
 
+
         public Item(string content, bool isFile = false, bool active = false)
         {
             Content = content;
+            //Content = content;
             Active = active;
             IsFile = isFile;
         }
@@ -38,6 +44,15 @@
         public void SetInactive()
         {
             Active = false;
+        }
+
+        public string ColorContext()
+        {
+#if WINDOWS
+            return $"\u001b[7m{Content}\u001b[0m";
+#else
+            return Content;
+#endif
         }
     }
 }

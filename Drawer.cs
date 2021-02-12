@@ -17,7 +17,7 @@ namespace ConsoleEngine
             return _instance ?? (_instance = new Drawer());
         }
 
-        public EngineLanguageData ELanguage { get; private set; } = new EngineLanguageData(Language.Rus);
+        public EngineLanguageData ELanguage { get; private set; } = new EngineLanguageData(Language.Eng);
 
 
         // PageSize shows how many lines can fit one page.
@@ -181,17 +181,14 @@ namespace ConsoleEngine
             {
                 if (item.Active)
                 {
-                    if (!item.IsFile)
-                        lines[i++] = "* " + item.Content;
+                    if (item.ColorContext().Contains("\u001b"))
+                        lines[i++] = new string(' ', 8) + item.ColorContext();
                     else
                         lines[i++] = "* " + item.Content;
                 }
                 else
                 {
-                    if (!item.IsFile)
-                        lines[i++] = item.Content;
-                    else
-                        lines[i++] = item.Content;
+                    lines[i++] = item.Content;
                 }
             }
 
@@ -208,6 +205,7 @@ namespace ConsoleEngine
         /// <returns></returns>
         private string GenerateStringWithData(uint width, string data)
         {
+
             if (data.Length >= width)
             {
                 return data;
@@ -220,6 +218,9 @@ namespace ConsoleEngine
             resData += "|";
             resData += GenerateEmpty((uint)left);
             resData += data;
+            if (data.Contains("\u001b"))
+                resData += new string(' ', 8);
+
             resData += GenerateEmpty((uint)right) + "|";
 
             return resData;
@@ -244,7 +245,8 @@ namespace ConsoleEngine
         /// <param name="height"> height of the Sector</param>
         /// <param name="width"> width of the Sector</param>
         /// <param name="data"> data as dictionary </param>
-        private void DrawSector(uint height = (uint)Sizes.AppHeight, uint width = (uint)Sizes.AppWidth, SortedDictionary<int, string> data = null)
+        private void DrawSector(uint height = (uint)Sizes.AppHeight, uint width = (uint)Sizes.AppWidth,
+            SortedDictionary<int, string> data = null)
         {
             DrawLine(width);
             if (data == null)
@@ -374,6 +376,7 @@ namespace ConsoleEngine
             var lines = ELanguage.ExitMessage();
             var data = GenerateDictionaryOfDataLines(5, lines);
             DrawSector(data: data);
+            Console.ReadKey(true);
         }
 
         //=========================================| Views |=======================================================

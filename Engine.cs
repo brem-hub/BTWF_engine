@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+#if WINDOWS
+using System.Runtime.InteropServices;
+#endif
 
 namespace ConsoleEngine
 {
@@ -11,12 +15,19 @@ namespace ConsoleEngine
      */
     public static class Engine
     {
-        // TODO: make it singleton and move lang variable in here.
-
         // Instance of Drawer class, that is capable of drawing data.
         private static Drawer Drawer { get; } = Drawer.GetInstance();
 
-        public static Language Lang { get; private set; } = Language.Rus;
+        private static Language _lang  = Language.Eng;
+        public static Language Lang
+        {
+            get => _lang;
+            set
+            {
+                _lang = value;
+                Drawer.SetLanguage(_lang);
+            }
+        }
 
         /// <summary>
         /// Method is used to set ELanguage of the whole system.
@@ -43,20 +54,71 @@ namespace ConsoleEngine
                     Exit();
                     return false;
             }
-
             Drawer.SetLanguage(language);
             Lang = language;
             return true;
-
         }
 
+#if WINDOWS
 
+        private const int STD_OUTPUT_HANDLE = -11;
+        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+        private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+
+        [DllImport("kernel32.dll")]
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetLastError();
+        
+#endif
+
+        static Engine()
+        {
+
+#if MACOS
+            DrawWindow(Drawer.ELanguage.MacOSInfo(), Drawer.ELanguage.MacOSInfoTitle());
+#endif
+
+#if WINDOWS
+            try
+            {
+                var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+                if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
+                {
+                    HandleException(new SystemException("failed to get output console mode"));
+                    //Console.WriteLine("failed to get output console mode");
+                    //Console.ReadKey();
+                    //return;
+                }
+
+                outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+                if (!SetConsoleMode(iStdOut, outConsoleMode))
+                {
+                    HandleException(new SystemException($"failed to set output console mode, error code: {GetLastError()}"));
+                    //Console.WriteLine($"failed to set output console mode, error code: {GetLastError()}");
+                    //Console.ReadKey();
+                }
+
+            }
+            catch(Exception e)
+            {
+                HandleException(e);
+            }
+#endif
+        }
         // =============================| Drawer Interface |===================================
         // These methods make the process of drawing menus, pages, listings much easier.
 
-        #region Drawer Methods
+#region Drawer Methods
 
-        
+
 
         /// <summary>
         /// Method draws text as pages and user can move around using [<] and [>]
@@ -222,7 +284,7 @@ namespace ConsoleEngine
 #endregion
 
         //============================| Methods that are needed for output and input control |=============================
-        #region Menu
+#region Menu
 
         /// <summary>
         /// Method creates menu with Items and allows user to move around menu using ^ v and choose Item.
@@ -375,8 +437,7 @@ namespace ConsoleEngine
         /// <returns> Array of items </returns>
         private static List<Item> GenerateMenuListFromInput(Dictionary<string, string> data)
         {
-            var ret = new List<Item>();
-            foreach (var item in data) ret.Add(new Item(item.Key));
+            var ret = data.Select(item => new Item(item.Key)).ToList();
             if (ret.Count > 0)
                 ret[0].SetActive();
             return ret;
@@ -438,7 +499,7 @@ namespace ConsoleEngine
 
             items[currentActive].SetActive();
         }
-        #endregion
+#endregion
 
         [Obsolete("Can be revived")]
         public static bool KeyPressed(string context, ConsoleKey keyToCheck)
@@ -580,7 +641,7 @@ namespace ConsoleEngine
         // Predicates are small functions that help Engine to check if given x is valid.
         // If I want to check if given X is greater than zero - I'll use PositiveNonZero.
 
-        #region Predicates
+#region Predicates
 
 
 
@@ -597,7 +658,7 @@ namespace ConsoleEngine
         public static bool DModulusIn(double x, double y) => x <= y && x >= -y;
         public static bool DModulusOut(double x, double y) => x >= y || x <= -y;
 
-        #endregion
+#endregion
 
 
 

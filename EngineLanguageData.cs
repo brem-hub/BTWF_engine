@@ -38,6 +38,49 @@
         public string KeyPress() => Language is Language.Rus ? "Нажмите нужную клавишу" : "Press needed key";
 
 
+        public string[] MacOSInfo()
+        {
+            switch (Language)
+            {
+                default:
+                case Language.Rus:
+                    return new[]
+                    {
+                        "Здравствуй, пользователь MacOS.",
+                        "Для корректной работы скорее всего тебе придётся использовать не внутреннюю консоль Visual Studio",
+                        "Для отключения внутренней консоли Visual Studio выполни следующую процедуру:",
+                        "Настройки -> Другие -> Терминал -> Отключить внутренний терминал.",
+                        "После чего перезапусти Visual Studio.",
+                        "Если в Raider происходит такая же проблема, пожалуйста отключи внутренний терминал.",
+                        "Спасибо!"
+                    };
+                case Language.Eng:
+                    return new []
+                    {
+                        "Hello MacOS user.",
+                        "For the correct work, most likely you will have to use a non-integrated Visual Studio console",
+                        "To disable the Visual Studio Internal Console, follow this procedure:",
+                        "Settings -> Others -> Terminal -> Disable internal terminal.",
+                        "Then restart Visual Studio.",
+                        "If the same problem occurs in Raider, please disable the internal terminal.",
+                        "Thank you!"
+                    };
+            }
+         
+        }
+
+        public string MacOSInfoTitle()
+        {
+            switch (Language)
+            {
+                default:
+                case Language.Rus:
+                    return "Пользователю MacOS";
+                case Language.Eng:
+                    return "MacOS user";
+            }
+        }
+
         public string[] Pages(int cur, int max)
         {
             switch (Language)
@@ -219,5 +262,7 @@
                     };
             }
         }
+
+
     }
 }
