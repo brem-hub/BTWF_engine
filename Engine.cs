@@ -321,6 +321,35 @@ namespace ConsoleEngine
             }
         }
 
+
+        public static string ScrollableMenuWithPath(Dictionary<string, string> data, uint numberOfItems, string title = "",
+            string[] additionalInfo = null, string path = null)
+        {
+
+            var menuList = GenerateMenuListFromInput(data);
+            var currentActive = 0;
+
+            while (true)
+            {
+                var list = GenerateListWithOffset(menuList, currentActive, (int)numberOfItems);
+                Drawer.DrawMenuWithPathView(title, list, additionalInfo, path);
+                var key = Console.ReadKey(true);
+                switch (key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        DecreaseIterator(ref menuList, ref currentActive);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        IncreaseIterator(ref menuList, ref currentActive);
+                        break;
+                    case ConsoleKey.Enter:
+                        return data[menuList[currentActive].Content];
+                    case ConsoleKey.Escape:
+                        return null;
+                }
+            }
+        }
+
         /// <summary>
         /// Menu that can be scrolled.
         /// </summary>
@@ -518,7 +547,7 @@ namespace ConsoleEngine
         /// </summary>
         /// <param name="context"> string to output for user </param>
         /// <param name="interrupted"> if user pressed [Esc] becomes true </param>
-        /// <returns> string from user or null of interrupted </returns>
+        /// <returns> string from user or null if interrupted </returns>
         public static string GetStringWithContext(string context, ref bool interrupted, bool checkForEmpty = false)
         {
             // TODO: make method return bool and set string as ref or out, so it would use less space in program

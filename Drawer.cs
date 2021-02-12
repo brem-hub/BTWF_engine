@@ -381,25 +381,44 @@ namespace ConsoleEngine
 
         //=========================================| Views |=======================================================
         // View is a template, that is filled by user.
+
+        private void DrawMenuView(SortedDictionary<int, string> data, string[] additionalInfo = null)
+        {
+            if (additionalInfo != null && additionalInfo.Length > 0)
+            {
+                var menuData = new List<string>(additionalInfo);
+                DrawLeftMenu(
+                    MaxHeightSize(additionalInfo.ToArray()),
+                    MaxStringSize(additionalInfo.ToArray()) + 2,
+                    10,
+                    menuData,
+                    ref data
+                );
+            }
+            DrawSector(data: data);
+        }
         public void DrawMenuView(string title, List<Item> menuList, string[] additionalInfo)
         {
             Console.Clear();
             var lines = GenerateItemLines(menuList);
             var data = GenerateDictionaryOfDataLines(7, lines);
             data.Add(1, title);
-            if (additionalInfo != null && additionalInfo.Length > 0)
-            {
-                List<string> menuData = new List<string>(additionalInfo);
-                DrawLeftMenu(
-                    MaxHeightSize(additionalInfo.ToArray()),
-                    MaxStringSize(additionalInfo.ToArray()) + 2,
-                    6,
-                    menuData,
-                    ref data
-                    );
-            }
-            DrawSector(data: data);
+
+            DrawMenuView(data, additionalInfo);
+            //if (additionalInfo != null && additionalInfo.Length > 0)
+            //{
+            //    List<string> menuData = new List<string>(additionalInfo);
+            //    DrawLeftMenu(
+            //        MaxHeightSize(additionalInfo.ToArray()),
+            //        MaxStringSize(additionalInfo.ToArray()) + 2,
+            //        6,
+            //        menuData,
+            //        ref data
+            //        );
+            //}
+            //DrawSector(data: data);
         }
+
         public void DrawMenuView(string title, List<Item> menuList, List<string> additionalInfo, List<string> headerInfo)
         {
             Console.Clear();
@@ -417,20 +436,34 @@ namespace ConsoleEngine
                     ref data
                     );
             }
-            if (additionalInfo != null && additionalInfo.Count > 0)
-            {
-                var menuData = new List<string>(additionalInfo);
-                DrawLeftMenu(
-                    MaxHeightSize(additionalInfo.ToArray()),
-                    MaxStringSize(additionalInfo.ToArray()) + 2,
-                    10,
-                    menuData,
-                    ref data
-                );
-            }
-            DrawSector(data: data);
+            DrawMenuView(data, additionalInfo.ToArray());
+            //if (additionalInfo != null && additionalInfo.Count > 0)
+            //{
+            //    var menuData = new List<string>(additionalInfo);
+            //    DrawLeftMenu(
+            //        MaxHeightSize(additionalInfo.ToArray()),
+            //        MaxStringSize(additionalInfo.ToArray()) + 2,
+            //        10,
+            //        menuData,
+            //        ref data
+            //    );
+            //}
+            //DrawSector(data: data);
         }
 
+        public void DrawMenuWithPathView(string title, List<Item> menuList, string[] additionalInfo, string path)
+        {
+            Console.Clear();
+            var lines = GenerateItemLines(menuList);
+            var data = GenerateDictionaryOfDataLines(7, lines);
+            var menuData = new List<string> { path };
+
+            data.Add(1, title);
+
+            DrawLeftMenu(2, MaxStringSize(menuData.ToArray()) + 2, 2, menuData, ref data);
+
+            DrawMenuView(data, additionalInfo);
+        }
         public void DrawInfoView(string title, string[] lines, bool wait = true, string[] addInfo = null)
         {
             Console.Clear();
